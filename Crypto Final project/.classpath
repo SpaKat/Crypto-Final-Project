@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path=""/>
+	<classpathentry kind="lib" path="C:/Users/Laga-Sama/workspace/Crypto Final project/jars/aviator-4.1.2.jar" sourcepath="C:/Users/Laga-Sama/.m2/repository/com/googlecode/aviator/aviator/4.1.2/aviator-4.1.2-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Laga-Sama/workspace/Crypto Final project/jars/commons-beanutils-1.9.3.jar" sourcepath="C:/Users/Laga-Sama/.m2/repository/commons-beanutils/commons-beanutils/1.9.3/commons-beanutils-1.9.3-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Laga-Sama/workspace/Crypto Final project/jars/commons-collections-3.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Laga-Sama/workspace/Crypto Final project/jars/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Laga-Sama/workspace/Crypto Final project/jars/ipaddress-4.2.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Laga-Sama/workspace/Crypto Final project/jars/jcasbin-1.2.0.jar" sourcepath="C:/Users/Laga-Sama/.m2/repository/org/casbin/jcasbin/1.2.0/jcasbin-1.2.0-sources.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
+	<classpathentry kind="output" path=""/>
+</classpath>
