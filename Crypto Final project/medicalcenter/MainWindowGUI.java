@@ -6,11 +6,16 @@ import javafx.scene.layout.StackPane;
 
 public class MainWindowGUI extends ScrollPane{
 
-	private LoginGUI login = new LoginGUI();
-	private AccountGUI account = new AccountGUI();
+	
+	private AccountGUI accountGUI = new AccountGUI();
 	
 	public MainWindowGUI() {
-		setContent(login);
+		setContent(new LoginGUI(this));
+	}
+
+	public void successfulLogin(Account account) {
+		accountGUI.setAccount(account);
+		setContent(accountGUI);
 	}
 	
 }

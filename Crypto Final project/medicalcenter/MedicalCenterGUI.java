@@ -8,7 +8,7 @@ public class MedicalCenterGUI extends Application{
 
 	@Override
 	public void start(Stage primaryStage)  {
-		Scene scene = new Scene(new MainMenuGUI());
+		Scene scene = new Scene(new MainMenuGUI(),450,450);
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Medical Center GUI ");
 		primaryStage.show();
