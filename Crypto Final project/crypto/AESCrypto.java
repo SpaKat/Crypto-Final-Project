@@ -17,14 +17,22 @@ public class AESCrypto extends Crypto{
 	private final String keyTypeAES = "AES";
 	private final String cipherTypeAES = "AES/CBC/PKCS5Padding";
 	
-	public void generateKey() throws NoSuchAlgorithmException {
+	public AESCrypto() throws NoSuchAlgorithmException {
+		generateKey();
+	}
+	
+	public AESCrypto(String pass) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		generateKey(pass);
+	}
+	
+	private void generateKey() throws NoSuchAlgorithmException {
 		// Generate key
 		KeyGenerator kgen = KeyGenerator.getInstance(keyTypeAES);
 		kgen.init(256);
 		key = kgen.generateKey();
 	}
 	
-	public void generateKey(String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+	private void generateKey(String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		// Generate key
 		MessageDigest sha = MessageDigest.getInstance(getSHA_256());
 		byte[] eatkey = sha.digest(password.getBytes(getUTF_8()));

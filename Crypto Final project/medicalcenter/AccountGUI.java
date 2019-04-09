@@ -5,14 +5,11 @@ import javafx.scene.shape.Circle;
 
 public class AccountGUI extends Pane {
 	
-	public AccountGUI() {
+	private Account account;
 
-	getChildren().add(new Circle(45));
-	
-	}
-
-	public void setAccount(Account doctor) {
-		// TODO Auto-generated method stub
+	public AccountGUI(Account account) {
+		this.account = account;
+		
 		
 	}
 

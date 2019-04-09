@@ -15,8 +15,13 @@ public class RSACrypto extends Crypto{
 	private String keyTypeRSA = "RSA";
 	private String cipherTypeRSA = "RSA/ECB/PKCS1Padding";
 
-	public RSACrypto() {
-		// TODO Auto-generated constructor stub
+	public RSACrypto(PrivateKey sk , PublicKey pk) {
+		this.privateKey = sk;
+		this.publicKey = pk;
+	}
+
+	public RSACrypto() throws NoSuchAlgorithmException {
+		generateKeyPair();
 	}
 
 	public void generateKeyPair() throws NoSuchAlgorithmException {

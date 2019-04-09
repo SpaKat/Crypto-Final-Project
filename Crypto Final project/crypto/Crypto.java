@@ -111,11 +111,4 @@ public class Crypto {
 		b = new String(hash).equals(new String(hashSHA512(input)));
 		return b;
 	}
-	public void writeKey(Key key, String name) throws IOException {
-		Base64.Encoder encoder = Base64.getEncoder();
-		FileWriter prtout = new FileWriter(name +".key");
-		prtout.write(encoder.encodeToString(key.getEncoded()));
-		prtout.flush();
-		prtout.close();
-	}
 }
