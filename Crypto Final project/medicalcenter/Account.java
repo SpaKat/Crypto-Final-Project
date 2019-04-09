@@ -19,6 +19,11 @@ public class Account {
 		this.id = id;
 		this.rsa = rsa;
 	}
-
-
+	public String getName() {
+		return name;
+	}
+	public String getId() {
+		return id;
+	}
+	
 }

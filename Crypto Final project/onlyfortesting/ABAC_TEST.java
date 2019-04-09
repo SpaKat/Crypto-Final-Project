@@ -76,16 +76,19 @@ public class ABAC_TEST {
 		*/
 		
 		
-		
+		/*
 		try {
 			
 
 			RSACrypto rsa = new RSACrypto();
 			
-			Base64.Encoder encoder = Base64.getEncoder();
+			//Base64.Encoder encoder = Base64.getEncoder();
 			
-			String pri = encoder.encodeToString(rsa.getPrivateKey().getEncoded());
-			String pub = encoder.encodeToString(rsa.getPublicKey().getEncoded());
+			String pri = new String(rsa.getPrivateKey().getEncoded());
+			String pub = new String(rsa.getPublicKey().getEncoded());
+			
+			System.out.println(rsa.getPrivateKey().getEncoded());
+			System.out.println(rsa.getPublicKey().getEncoded());
 			
 			AESCrypto aesFirst = new AESCrypto("toor");
 			Cipher cipherfirst = aesFirst.encryptCipher(aesFirst.getKey(), aesFirst.getCipherTypeAES());
@@ -93,16 +96,18 @@ public class ABAC_TEST {
 			
 			File f = new File("t.test");
 			FileWriter fw = new FileWriter(f);
-			BufferedWriter bw = new BufferedWriter(fw);
 			
-			bw.write(encoder.encodeToString(cipherfirst.getIV()));
-			bw.newLine();
-			bw.write(new String(aesFirst.encryptString(pri, cipherfirst)));
-			bw.newLine();
-			bw.write(new String(aesFirst.encryptString(pub, cipherfirst)));
-			bw.newLine();
-	
-			bw.close();
+			//bw.write(encoder.encodeToString(cipherfirst.getIV())+"::");
+			fw.write(new String(cipherfirst.getIV())+"::");
+			System.out.println(cipherfirst.getIV().length);
+			fw.flush();
+			//bw.write(encoder.encodeToString(aesFirst.encryptString(pri, cipherfirst))+"::");
+			fw.write(new String(aesFirst.encryptString(pri, cipherfirst))+"::");
+			fw.flush();
+			//bw.write(encoder.encodeToString(aesFirst.encryptString(pub, cipherfirst)));
+			fw.write(new String(aesFirst.encryptString(pub, cipherfirst)));
+			fw.flush();
+			fw.close();
 			
 			
 			
@@ -113,20 +118,20 @@ public class ABAC_TEST {
 			FileReader filereader = new FileReader(f);
 			BufferedReader bufferRead = new BufferedReader(filereader);
 			
-			Base64.Decoder decoder = Base64.getDecoder();
+		//	Base64.Decoder decoder = Base64.getDecoder();
+			String[] split = bufferRead.readLine().split("::");
+			Cipher cipherSecond = aesSecond.decryptCipher(aesSecond.getKey(),cipherfirst.getIV(), aesSecond.getCipherTypeAES());
 			
-			Cipher cipherSecond = aesSecond.decryptCipher(aesSecond.getKey(),decoder.decode(bufferRead.readLine()), aesSecond.getCipherTypeAES());
-			
-			ByteArrayOutputStream privateKey = aesSecond.decryptString(bufferRead.readLine().getBytes(), cipherSecond);
-			ByteArrayOutputStream publicKey = aesSecond.decryptString(bufferRead.readLine().getBytes(), cipherSecond);
+			ByteArrayOutputStream privateKey = aesSecond.decryptString(aesFirst.encryptString(pri, cipherfirst), cipherSecond);
+			ByteArrayOutputStream publicKey = aesSecond.decryptString(aesFirst.encryptString(pub, cipherfirst), cipherSecond);
 			
 	        KeyFactory kf = KeyFactory.getInstance("RSA");
 			
 	        
-			PKCS8EncodedKeySpec keySpecPKCS8 = new PKCS8EncodedKeySpec(decoder.decode(privateKey.toByteArray()));
+			PKCS8EncodedKeySpec keySpecPKCS8 = new PKCS8EncodedKeySpec(privateKey.toByteArray());
 	        PrivateKey privKey = kf.generatePrivate(keySpecPKCS8);
 
-	        X509EncodedKeySpec keySpecX509 = new X509EncodedKeySpec(decoder.decode(publicKey.toByteArray()));
+	        X509EncodedKeySpec keySpecX509 = new X509EncodedKeySpec(publicKey.toByteArray());
 	        PublicKey pubKey = kf.generatePublic(keySpecX509);
 			// name
 			// private key
@@ -140,7 +145,73 @@ public class ABAC_TEST {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
 		
+		try {
+			RSACrypto rsa = new RSACrypto();
+			
+			Base64.Encoder encoder = Base64.getEncoder();
+			
+			
+			AESCrypto aesFirst = new AESCrypto("toor");
+			//Cipher cipherfirst = aesFirst.encryptCipher(aesFirst.getKey(), aesFirst.getCipherTypeAES());
+			
+			String iv = encoder.encodeToString(aesFirst.getIV());
+			String pri = encoder.encodeToString(rsa.getPrivateKey().getEncoded());
+			String pub = encoder.encodeToString(rsa.getPublicKey().getEncoded());
+		
+			//pri = encoder.encodeToString(	aesFirst.encryptString(pri, cipherfirst)	);	
+			pri = encoder.encodeToString(	aesFirst.encrypt(pri)	);	
+			File f = new File("file/root.shadow");
+			FileWriter fw = new FileWriter(f);
+			
+			fw.write(iv+"::");
+			fw.write(pri+"::");
+			fw.write(pub);
+			
+			fw.close();
+			
+			//----------------------------------------------------------------//
+			FileReader fr = new FileReader(f);
+			BufferedReader br = new BufferedReader(fr);
+			
+			String line = br.readLine();
+			String[] split = line.split("::");
+
+			System.out.println(split[0].equals(iv));
+			System.out.println(split[1].equals(pri));
+			System.out.println(split[2].equals(pub));
+
+			br.close();
+			
+			
+			KeyFactory kf = KeyFactory.getInstance("RSA");
+			
+			Base64.Decoder decoder = Base64.getDecoder();
+			
+			byte[] IV  = decoder.decode(split[0]); 
+			byte[] csk = decoder.decode(split[1]); 
+			byte[] pk = decoder.decode(split[2]);
+			
+			AESCrypto aesSecond = new AESCrypto("toor");
+			//Cipher cipherSecond = aesSecond.decryptCipher(aesSecond.getKey(),IV, aesSecond.getCipherTypeAES());
+			//System.out.println( aesSecond.decryptString(aesFirst.encryptString("TEST", cipherfirst), cipherSecond) );
+			//byte[] sk = aesSecond.decryptString(csk, cipherSecond).toByteArray();
+			byte[] sk = aesSecond.decrypt(csk,IV);
+			sk = decoder.decode(sk);
+			
+			PKCS8EncodedKeySpec keySpecPKCS8 = new PKCS8EncodedKeySpec(sk);
+	        PrivateKey privKey = kf.generatePrivate(keySpecPKCS8);
+
+	        X509EncodedKeySpec keySpecX509 = new X509EncodedKeySpec(pk);
+	        PublicKey pubKey = kf.generatePublic(keySpecX509);
+			
+	        RSACrypto newRSA = new RSACrypto(privKey, pubKey);
+	        
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 
 	}
 

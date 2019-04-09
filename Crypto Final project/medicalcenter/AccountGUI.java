@@ -1,14 +1,15 @@
 package medicalcenter;
 
-import javafx.scene.layout.Pane;
-import javafx.scene.shape.Circle;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Text;
 
-public class AccountGUI extends Pane {
+public class AccountGUI extends BorderPane {
 	
 	private Account account;
 
 	public AccountGUI(Account account) {
 		this.account = account;
+		setTop(new Text(account.getName() + "  " + account.getId()));
 		
 		
 	}

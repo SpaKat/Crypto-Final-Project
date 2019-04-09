@@ -69,26 +69,33 @@ public class UserFile {
 		AESCrypto aes = new AESCrypto(pass);
 		
 		File userInfo = new File("file/"+name+".shadow");
+		FileReader fr = new FileReader(userInfo);
+		BufferedReader br = new BufferedReader(fr);
 		
-		FileReader filereader = new FileReader(userInfo);
-		BufferedReader bufferRead = new BufferedReader(filereader);
+		String line = br.readLine();
+		String[] split = line.split("::");
+
+		br.close();
+		
+		KeyFactory kf = KeyFactory.getInstance("RSA");
 		
 		Base64.Decoder decoder = Base64.getDecoder();
-		byte[] privateKey = decoder.decode(bufferRead.readLine());
-		byte[] publicKey = decoder.decode(bufferRead.readLine());;
 		
-        KeyFactory kf = KeyFactory.getInstance("RSA");
+		byte[] IV  = decoder.decode(split[0]); 
+		byte[] csk = decoder.decode(split[1]); 
+		byte[] pk = decoder.decode(split[2]);
 		
-		PKCS8EncodedKeySpec keySpecPKCS8 = new PKCS8EncodedKeySpec(privateKey);
+		AESCrypto aesSecond = new AESCrypto(pass);
+		byte[] sk = aesSecond.decrypt(csk,IV);
+		sk = decoder.decode(sk);
+		
+		PKCS8EncodedKeySpec keySpecPKCS8 = new PKCS8EncodedKeySpec(sk);
         PrivateKey privKey = kf.generatePrivate(keySpecPKCS8);
 
-        X509EncodedKeySpec keySpecX509 = new X509EncodedKeySpec(publicKey);
+        X509EncodedKeySpec keySpecX509 = new X509EncodedKeySpec(pk);
         PublicKey pubKey = kf.generatePublic(keySpecX509);
-
 		
 		RSACrypto rsa = new RSACrypto(privKey, pubKey);
-		
-		bufferRead.close();
 		
 		return new Account(name,aes,rsa,id);
 	}
