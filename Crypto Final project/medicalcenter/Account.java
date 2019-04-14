@@ -8,22 +8,22 @@ import crypto.RSACrypto;
 
 public class Account {
 	
-	private String id;
+	private int level;
 	private String name;
 	private AESCrypto aes;
 	private RSACrypto rsa;
 	
-	public Account(String name, AESCrypto aes, RSACrypto rsa, String id) {
+	public Account(String name, AESCrypto aes, RSACrypto rsa, int level) {
 		this.name = name;
 		this.aes = aes;
-		this.id = id;
+		this.level = level;
 		this.rsa = rsa;
 	}
 	public String getName() {
 		return name;
 	}
-	public String getId() {
-		return id;
+	public int getId() {
+		return level;
 	}
 	
 }

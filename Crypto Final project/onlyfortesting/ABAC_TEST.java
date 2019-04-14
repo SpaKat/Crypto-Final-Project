@@ -1,8 +1,6 @@
 package onlyfortesting;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -13,11 +11,12 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-
 import crypto.AESCrypto;
 import crypto.RSACrypto;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.NumberBinding;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 public class ABAC_TEST {
 
@@ -165,8 +164,8 @@ public class ABAC_TEST {
 			File f = new File("file/root.shadow");
 			FileWriter fw = new FileWriter(f);
 			
-			fw.write(iv+"::");
-			fw.write(pri+"::");
+			fw.write(iv+"\n");
+			fw.write(pri+"\n");
 			fw.write(pub);
 			
 			fw.close();
@@ -175,9 +174,14 @@ public class ABAC_TEST {
 			FileReader fr = new FileReader(f);
 			BufferedReader br = new BufferedReader(fr);
 			
-			String line = br.readLine();
-			String[] split = line.split("::");
+			//String line = br.readLine();
+			String[] split = new String[3]; //line.split("::");
 
+			split[0] = br.readLine();
+			split[1] = br.readLine();
+			split[2] = br.readLine();
+
+			
 			System.out.println(split[0].equals(iv));
 			System.out.println(split[1].equals(pri));
 			System.out.println(split[2].equals(pub));
@@ -212,7 +216,8 @@ public class ABAC_TEST {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
-
+		
+		
 	}
 
 

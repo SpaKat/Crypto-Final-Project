@@ -7,11 +7,15 @@ import javafx.scene.layout.StackPane;
 public class MainWindowGUI extends BorderPane{
 
 	public MainWindowGUI() {
-		setCenter(new ScrollPane( new LoginGUI(this) ));
+		logout();
 	}
 
 	public void successfulLogin(Account account) {
-		setCenter(new AccountGUI(account));
+		setCenter(new AccountGUI(account,this));
 	}
-	
+
+	public void logout() {
+		setCenter(new ScrollPane( new LoginGUI(this) ));		
+	}
+
 }

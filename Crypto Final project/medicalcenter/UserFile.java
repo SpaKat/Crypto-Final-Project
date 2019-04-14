@@ -3,7 +3,9 @@ package medicalcenter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -53,7 +55,7 @@ public class UserFile {
 				String[] split = line.split("::");
 				if (name.equals(split[0])) {
 					if (crypto.compareHashSHA512(split[1], pass)) {
-						doctor = setUpAccount(name,pass,split[2]);
+						doctor = setUpAccount(name,pass,Integer.parseInt( split[2]));
 					}
 				}
 			}
@@ -65,15 +67,19 @@ public class UserFile {
 		return doctor;
 	}
 
-	private Account setUpAccount(String name, String pass, String id) throws Exception {
+	private Account setUpAccount(String name, String pass, int id) throws Exception {
 		AESCrypto aes = new AESCrypto(pass);
 		
-		File userInfo = new File("file/"+name+".shadow");
+		File userInfo = new File("file/"+id+".shadow");
 		FileReader fr = new FileReader(userInfo);
 		BufferedReader br = new BufferedReader(fr);
 		
-		String line = br.readLine();
-		String[] split = line.split("::");
+		
+		String[] split = new String[3];
+
+		split[0] =  br.readLine();
+		split[1] =  br.readLine();
+		split[2] =  br.readLine();
 
 		br.close();
 		
@@ -98,6 +104,103 @@ public class UserFile {
 		RSACrypto rsa = new RSACrypto(privKey, pubKey);
 		
 		return new Account(name,aes,rsa,id);
+	}
+
+	public boolean unique(int x) {
+		boolean b = true;
+		try {
+			FileReader fr = new FileReader(users);
+			BufferedReader br = new BufferedReader(fr);
+			String line;
+			while ( (line = br.readLine()) != null) {
+				String[] split = line.split("::");
+				try {
+					int y = Integer.parseInt(split[2]);				
+					if (x == y ) {
+						b = false;
+					}
+				}catch (Exception e) {
+				// TODO: handle exception
+				}
+			}
+			br.close();
+
+		} catch (Exception e) { 
+			e.printStackTrace();
+		}
+		return b;
+	}
+
+	public boolean makeNewDoctorAccount(String name, String pass, int x) {
+		boolean b = false;
+		Crypto crypto = new Crypto();
+		try {
+			pass = crypto.hashSHA512(pass);
+			FileWriter fw = new FileWriter(users,true);
+			fw.write(name+"::"+pass+"::"+x+"\n");
+			fw.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			b = true;
+		}
+		return b;
+	}
+
+	public boolean unique(String name, String pass, int x) {
+		boolean b = true;
+		try {
+			FileReader fr = new FileReader(users);
+			BufferedReader br = new BufferedReader(fr);
+			Crypto crypto = new Crypto();
+			String line;
+			pass = crypto.hashSHA512(pass);
+			while ( (line = br.readLine()) != null) {
+				String[] split = line.split("::");
+				try {
+					int y = Integer.parseInt(split[2]);				
+					if (x == y ) {
+						b = false;
+					}
+				}catch (Exception e) {
+				// TODO: handle exception
+				}
+				if (split[0].equals(name) || split[1].equals(pass)) {
+					b = false;
+				}
+			}
+			br.close();
+
+		} catch (Exception e) { 
+			e.printStackTrace();
+		}		
+		return b;
+	}
+
+	public void generateAccountInfo(int id, String pass) throws Exception {
+		Crypto c = new Crypto();
+		
+		RSACrypto rsa = new RSACrypto();
+		
+		Base64.Encoder encoder = Base64.getEncoder();
+		
+		AESCrypto aesFirst = new AESCrypto(pass);
+		
+		String iv = encoder.encodeToString(aesFirst.getIV());
+		String pri = encoder.encodeToString(rsa.getPrivateKey().getEncoded());
+		String pub = encoder.encodeToString(rsa.getPublicKey().getEncoded());
+	
+		
+		pri = encoder.encodeToString(	aesFirst.encrypt(pri)	);	
+		File f = new File("file/"+id+".shadow");
+		FileWriter fw = new FileWriter(f);
+		
+		fw.write(iv+"\n");
+		fw.write(pri+"\n");
+		fw.write(pub + "\n");
+		
+		fw.close();
+		
 	}
 
 
