@@ -283,28 +283,48 @@ public class UserFile {
 	}
 
 	public void exportAdminPubKey(File exportKey) {
-	try {
-		File userInfo = new File("file/0.shadow");
-		FileReader fr = new FileReader(userInfo);
-		BufferedReader br = new BufferedReader(fr);
+		try {
+			File userInfo = new File("file/doctor 0.shadow");
+			FileReader fr = new FileReader(userInfo);
+			BufferedReader br = new BufferedReader(fr);
 
 
-		String[] split = new String[3];
+			String[] split = new String[3];
 
-		split[0] =  br.readLine();
-		split[1] =  br.readLine();
-		split[2] =  br.readLine();
+			split[0] =  br.readLine();
+			split[1] =  br.readLine();
+			split[2] =  br.readLine();
 
-		br.close();
-		
-		File export = new File(exportKey.getPath() + "/MedicalCenterKey.key");
-		FileWriter fw = new FileWriter(export);
-		fw.write(split[2]);
-		fw.close();
-	}catch (Exception e) {
-		e.printStackTrace();
-		// TODO: handle exception
+			br.close();
+
+			File export = new File(exportKey.getPath() + "/MedicalCenterKey.key");
+			FileWriter fw = new FileWriter(export);
+			fw.write(split[2]);
+			fw.close();
+		}catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
 	}
-	}
+	public void exportDoctorPubKey(int docoterId, File exportKey) {
+		try {
+			File userInfo = new File("file/doctor "+docoterId+".shadow");
+			FileReader fr = new FileReader(userInfo);
+			BufferedReader br = new BufferedReader(fr);
+			String[] split = new String[3];
+			split[0] =  br.readLine();
+			split[1] =  br.readLine();
+			split[2] =  br.readLine();
 
+			br.close();
+
+			File export = new File(exportKey.getPath() + "/DoctorKey.key");
+			FileWriter fw = new FileWriter(export);
+			fw.write(split[2]);
+			fw.close();
+		}catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+	}
 }

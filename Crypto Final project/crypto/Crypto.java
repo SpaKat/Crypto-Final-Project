@@ -111,4 +111,5 @@ public class Crypto {
 		b = new String(hash).equals(new String(hashSHA512(input)));
 		return b;
 	}
+	
 }

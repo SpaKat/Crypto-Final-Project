@@ -30,6 +30,11 @@ public class AESCrypto extends Crypto{
 		cipherfirst = encryptCipher(getKey(), getCipherTypeAES());
 	}
 	
+	public AESCrypto(byte[] bytes) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException {
+		key = new SecretKeySpec(bytes,"AES");
+		cipherfirst = encryptCipher(getKey(), getCipherTypeAES());
+	}
+
 	private void generateKey() throws NoSuchAlgorithmException {
 		// Generate key
 		KeyGenerator kgen = KeyGenerator.getInstance(keyTypeAES);

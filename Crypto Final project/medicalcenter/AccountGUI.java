@@ -21,9 +21,8 @@ import javafx.stage.Stage;
 public class AccountGUI extends BorderPane {
 
 	private Account account;
-	private Doctor doctorAccount;
 	private MenuBar menuBar = new MenuBar();
-	
+
 	public AccountGUI(Account account, MainWindowGUI mainWindowGUI) {
 		this.account = account;
 		setTop(menuBar);
@@ -50,16 +49,16 @@ public class AccountGUI extends BorderPane {
 			filechooser.setTitle("load patient info");
 			File patientFile = filechooser.showOpenDialog(new Stage());
 			if (patientFile!=null) {
-				
+
 			}
 		});
 		file.getItems().add(loadPatientInfo);
-		
-		
+
+
 		MenuItem exportAdminPubkey = new MenuItem("export server public key");
 		exportAdminPubkey.setOnAction(e ->{
 			UserFile u = new UserFile();
-			
+
 			DirectoryChooser filechooser = new DirectoryChooser();
 			filechooser.setTitle("select export folder");
 			File exportKey = filechooser.showDialog(new Stage());
@@ -113,13 +112,13 @@ public class AccountGUI extends BorderPane {
 		back.setSpacing(20);
 		TextField patientname = makeText("Enter Patient Name ", back);
 		TextField patientDoctorid = makeText("Enter Doctor id(s) \n(add :: between each it ) ",back);
-		
+
 		ComboBox<String> namePLUSid = new ComboBox<String>();
 		UserFile user = new UserFile();
 		user.loadDoctors(namePLUSid);
-		
+
 		namePLUSid.setOnAction(e ->{
-			 	patientDoctorid.setText(patientDoctorid.getText() + "::"+namePLUSid.getValue().split("::")[1].trim());
+			patientDoctorid.setText(patientDoctorid.getText() + "::"+namePLUSid.getValue().split("::")[1].trim());
 		});
 		back.getChildren().remove(patientDoctorid);
 		Button enter = new Button("enter");
@@ -209,18 +208,30 @@ public class AccountGUI extends BorderPane {
 		});
 		// add patient to patient list
 		// transfer patient 
-		
-		
-		
-		doctorStuff.getItems().addAll(viewPatientmedicalData);
+		//export public key
+		MenuItem exportPubkey = new MenuItem("Export Public Key");
+		exportPubkey.setOnAction(e ->{
+			UserFile u = new UserFile();
+			DirectoryChooser filechooser = new DirectoryChooser();
+			filechooser.setTitle("select export folder");
+			File exportKey = filechooser.showDialog(new Stage());
+			if (exportKey!=null) {
+				if (exportKey.isDirectory()) {
+					u.exportDoctorPubKey(account.getId(),exportKey);
+				}
+			}
+		});
+
+
+		doctorStuff.getItems().addAll(viewPatientmedicalData,exportPubkey);
 		menuBar.getMenus().add(doctorStuff);
 	}
 
 	private void viewPatientMedData() {
 		Pane back = new Pane();
-		
-		
-		
+
+
+
 		setCenter(back);
 	}
 }
