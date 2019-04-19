@@ -33,7 +33,8 @@ public class CupGUI extends Application{
 		TextField enterMedicalValue = makeText("Enter Medical Value", vbox);
 		TextField enterMedicalTime = makeText("Enter Medical Time", vbox);
 		TextField enterDoctorId = makeText("Enter DoctorID", vbox);
-	
+		TextField enterPatientId = makeText("Enter PatientID", vbox);
+
 		
 		
 		Button entermedicalData = new Button("enter");
@@ -51,14 +52,15 @@ public class CupGUI extends Application{
 			FileChooser fc = new FileChooser();
 			File medkey =	fc.showOpenDialog(primaryStage);
 			try {
-				new Client("127.0.0.1",medkey,medData);
+				int id = Integer.parseInt(enterPatientId.getText());
+				new Client("127.0.0.1",medkey,medData,id);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		});
 		
-		vbox.getChildren().addAll(enterDoctorId,entermedicalData,send);
+		vbox.getChildren().addAll(entermedicalData,send);
 		HBox hbox = new HBox(20);
 		
 		ScrollPane mdScroll = new ScrollPane(md);

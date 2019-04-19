@@ -1,7 +1,6 @@
 package communication;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class Patient implements Serializable{
 
@@ -12,12 +11,13 @@ public class Patient implements Serializable{
 
 	private int[] doctorID;
 	private String[] medicalData;
+	private int id;
 	
-	
-	public Patient(int[] doctorID,String[] medicalData) {
+	public Patient(int[] doctorID,String[] medicalData, int id) {
 
 		this.doctorID = doctorID;
 		this.medicalData = medicalData;
+		this.id = id;
 	
 	}
 	public int[] getDoctorID() {
@@ -26,6 +26,8 @@ public class Patient implements Serializable{
 	public String[] getMedicalData() {
 		return medicalData;
 	}
-	
+	public int getId() {
+		return id;
+	}
 	
 }

@@ -2,6 +2,7 @@ package medicalcenter;
 
 import java.io.File;
 
+import communication.Server;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -22,7 +23,7 @@ public class AccountGUI extends BorderPane {
 
 	private Account account;
 	private MenuBar menuBar = new MenuBar();
-
+	private Server server;
 	public AccountGUI(Account account, MainWindowGUI mainWindowGUI) {
 		this.account = account;
 		setTop(menuBar);
@@ -49,12 +50,12 @@ public class AccountGUI extends BorderPane {
 			filechooser.setTitle("load patient info");
 			File patientFile = filechooser.showOpenDialog(new Stage());
 			if (patientFile!=null) {
-
+				//TODO
 			}
 		});
+		
 		file.getItems().add(loadPatientInfo);
-
-
+		
 		MenuItem exportAdminPubkey = new MenuItem("export server public key");
 		exportAdminPubkey.setOnAction(e ->{
 			UserFile u = new UserFile();
@@ -99,10 +100,23 @@ public class AccountGUI extends BorderPane {
 		//TODO
 		// start/end server
 		MenuItem start = new MenuItem("Start Server");
-		MenuItem end = new MenuItem("End Server");
-		//TODO
+		start.setOnAction(e ->{
+			try {
+				server.end();
+			}catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			server = new Server();
+			System.out.println("start server");
 
-		adminStuff.getItems().addAll(newDoctor,newPatient,newPassword,proccessMessages);
+		});
+		MenuItem end = new MenuItem("End Server");
+		end.setOnAction(e ->{
+			server.end();
+			System.out.println("end Sever");
+		});
+
+		adminStuff.getItems().addAll(newDoctor,newPatient,newPassword,proccessMessages,start,end);
 		menuBar.getMenus().add(adminStuff);
 		// 
 	}
@@ -222,7 +236,7 @@ public class AccountGUI extends BorderPane {
 			}
 		});
 
-
+ 
 		doctorStuff.getItems().addAll(viewPatientmedicalData,exportPubkey);
 		menuBar.getMenus().add(doctorStuff);
 	}
