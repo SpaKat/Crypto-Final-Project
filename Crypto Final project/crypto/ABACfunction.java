@@ -8,7 +8,7 @@ import com.googlecode.aviator.runtime.type.AviatorObject;
 
 public class ABACfunction extends AbstractFunction {
 
-	
+
 	@Override
 	public String getName() {
 		return getNameStatic();
@@ -21,11 +21,14 @@ public class ABACfunction extends AbstractFunction {
 	public AviatorObject call(Map<String, Object> env, AviatorObject arg1, AviatorObject arg2) {
 
 		String doctor = (String) arg1.getValue(env);
-		String patient = (String) arg2.getValue(env);
+		String[] patient = (String[]) arg2.getValue(env);
 		boolean b = false;
-		if (doctor.equals(patient)) {
-			b = true;
+		for (int i = 0; i < patient.length; i++) {
+			if (patient[i].equals(doctor)) {
+				b = true;
+			}
 		}
+
 		return AviatorBoolean.valueOf(b);
 	}
 
