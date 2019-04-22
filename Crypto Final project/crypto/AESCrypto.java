@@ -31,7 +31,7 @@ public class AESCrypto extends Crypto{
 	}
 	
 	public AESCrypto(byte[] bytes) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException {
-		key = new SecretKeySpec(bytes,"AES");
+		key = new SecretKeySpec(bytes,keyTypeAES);
 		cipherfirst = encryptCipher(getKey(), getCipherTypeAES());
 	}
 

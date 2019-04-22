@@ -25,5 +25,10 @@ public class Account {
 	public int getId() {
 		return level;
 	}
-	
+	public RSACrypto getRsa() {
+		return rsa;
+	}
+	public AESCrypto getAes() {
+		return aes;
+	}
 }

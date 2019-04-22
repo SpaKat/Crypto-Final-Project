@@ -20,11 +20,11 @@ public class ABACfunction extends AbstractFunction {
 	@Override
 	public AviatorObject call(Map<String, Object> env, AviatorObject arg1, AviatorObject arg2) {
 
-		String doctor = (String) arg1.getValue(env);
-		String[] patient = (String[]) arg2.getValue(env);
+		int doctor = (int) arg1.getValue(env);
+		int[] patient = (int[]) arg2.getValue(env);
 		boolean b = false;
 		for (int i = 0; i < patient.length; i++) {
-			if (patient[i].equals(doctor)) {
+			if (patient[i] == doctor) {
 				b = true;
 			}
 		}

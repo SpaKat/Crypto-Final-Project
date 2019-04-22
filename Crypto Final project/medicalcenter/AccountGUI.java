@@ -1,19 +1,31 @@
 package medicalcenter;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
 
+import communication.Patient;
 import communication.Server;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -27,7 +39,7 @@ public class AccountGUI extends BorderPane {
 	public AccountGUI(Account account, MainWindowGUI mainWindowGUI) {
 		this.account = account;
 		setTop(menuBar);
-		setBottom(new Text(account.getName() + "  " + account.getId()));
+		setBottom(new Text("Name and Id ---------> "+account.getName() + "  " + account.getId()));
 		menuBar(mainWindowGUI);
 		makePage(account.getId());
 	}
@@ -38,6 +50,11 @@ public class AccountGUI extends BorderPane {
 		MenuItem logout = new MenuItem("Login Out");
 		logout.setOnAction(e ->{
 			account = null;
+			try {
+				server.end();
+			}catch (Exception e1) {
+				//e1.printStackTrace();
+			}
 			mainWindowGUI.logout();
 		});
 		file.getItems().add(logout);
@@ -50,12 +67,12 @@ public class AccountGUI extends BorderPane {
 			filechooser.setTitle("load patient info");
 			File patientFile = filechooser.showOpenDialog(new Stage());
 			if (patientFile!=null) {
-				//TODO
+				loadPatient(patientFile);
 			}
 		});
-		
+
 		file.getItems().add(loadPatientInfo);
-		
+
 		MenuItem exportAdminPubkey = new MenuItem("export server public key");
 		exportAdminPubkey.setOnAction(e ->{
 			UserFile u = new UserFile();
@@ -71,6 +88,17 @@ public class AccountGUI extends BorderPane {
 		});
 		file.getItems().add(exportAdminPubkey);
 
+	}
+	private void loadPatient(File patientFile) {
+		try {
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(patientFile));
+			UserFile uf = new UserFile();
+			Patient p = uf.extractPatient(ois);
+			uf.processPatient(p);
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 	}
 	private void makePage(int id) {
 		if (id == 0) {
@@ -95,16 +123,13 @@ public class AccountGUI extends BorderPane {
 		// change password of given account
 		MenuItem newPassword = new MenuItem("Change password of an Account");
 		//TODO
-		// process new messages? -> may be have the system just do it. Threading yea
-		MenuItem proccessMessages = new MenuItem("Process new messages from patients");
-		//TODO
 		// start/end server
 		MenuItem start = new MenuItem("Start Server");
 		start.setOnAction(e ->{
 			try {
 				server.end();
 			}catch (Exception e1) {
-				e1.printStackTrace();
+				//e1.printStackTrace();
 			}
 			server = new Server();
 			System.out.println("start server");
@@ -115,8 +140,7 @@ public class AccountGUI extends BorderPane {
 			server.end();
 			System.out.println("end Sever");
 		});
-
-		adminStuff.getItems().addAll(newDoctor,newPatient,newPassword,proccessMessages,start,end);
+		adminStuff.getItems().addAll(newDoctor,newPatient,newPassword,start,end);
 		menuBar.getMenus().add(adminStuff);
 		// 
 	}
@@ -221,7 +245,9 @@ public class AccountGUI extends BorderPane {
 			viewPatientMedData();
 		});
 		// add patient to patient list
+
 		// transfer patient 
+
 		//export public key
 		MenuItem exportPubkey = new MenuItem("Export Public Key");
 		exportPubkey.setOnAction(e ->{
@@ -236,16 +262,38 @@ public class AccountGUI extends BorderPane {
 			}
 		});
 
- 
+
 		doctorStuff.getItems().addAll(viewPatientmedicalData,exportPubkey);
 		menuBar.getMenus().add(doctorStuff);
 	}
 
 	private void viewPatientMedData() {
-		Pane back = new Pane();
-
-
-
-		setCenter(back);
+		SplitPane sp = new SplitPane();
+		VBox left = new VBox();
+		FlowPane Right = new FlowPane();
+		UserFile u = new UserFile();
+		ComboBox<String> patients = u.avaiablePatients(account.getId());
+		patients.setOnAction(e ->{
+			Right.getChildren().clear();
+			ArrayList<MedicalData> data = u.loadpatientData(account, Integer.parseInt(patients.getValue().split("_")[1]));
+			data.forEach(md ->{
+				Label l = new Label();
+				l.setText(md.toString());
+				l.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(5),BorderStroke.THIN)));
+				Right.getChildren().add(l);
+			});
+		});
+		left.getChildren().add(patients);
+		ScrollPane scp = new ScrollPane(Right);
+		Right.prefWidthProperty().bind(scp.widthProperty().subtract(3));
+		sp.getItems().addAll(left,scp);
+		setCenter(sp);
+	}
+	public void close() {
+		try {
+			server.end();
+		}catch (Exception e1) {
+			//e1.printStackTrace();
+		}
 	}
 }
