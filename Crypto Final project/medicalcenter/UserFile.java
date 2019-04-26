@@ -575,4 +575,46 @@ public class UserFile {
 		return comboBox;
 	}
 
+	public void changePass(String name, int id, String pass) {
+		try {
+			FileReader fr = new FileReader(users);
+			BufferedReader br = new BufferedReader(fr);
+			
+			ArrayList<String[]> lines = new ArrayList<String[]>();
+			String line;
+			while ( (line = br.readLine()) != null) {
+				lines.add(line.split("::"));
+			}
+			br.close();
+			for (int i = 0; i < lines.size(); i++) {
+				if (lines.get(i)[0].equals(name) && lines.get(i)[2].equals( (""+id )  ) ) {
+					Crypto c = new Crypto();
+					lines.get(i)[1] = c.hashSHA512(pass);
+					generateAccountInfo(id, pass);
+				}
+			}
+			FileWriter fw = new FileWriter(users);
+			
+			lines.forEach(array ->{
+				String l = "";
+				l += array[0];
+				l += "::";
+				l += array[1];
+				l += "::";
+				l += array[2];
+				try {
+					fw.write(l+"\n");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			});
+			
+			fw.close();
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }

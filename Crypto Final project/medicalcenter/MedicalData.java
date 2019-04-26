@@ -14,7 +14,7 @@ public class MedicalData {
 		this.id = Integer.parseInt(split[0]);
 		MedicalType = split[1];
 		MedicalValue = split[2]; 
-		time = split[2];
+		time = split[3];
 	}
 
 	public int getId() {

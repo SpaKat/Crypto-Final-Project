@@ -122,6 +122,9 @@ public class AccountGUI extends BorderPane {
 		});
 		// change password of given account
 		MenuItem newPassword = new MenuItem("Change password of an Account");
+		newPassword.setOnAction(e->{
+			newPass();
+		});
 		//TODO
 		// start/end server
 		MenuItem start = new MenuItem("Start Server");
@@ -143,6 +146,37 @@ public class AccountGUI extends BorderPane {
 		adminStuff.getItems().addAll(newDoctor,newPatient,newPassword,start,end);
 		menuBar.getMenus().add(adminStuff);
 		// 
+	}
+	private void newPass() {
+		VBox back = new VBox();
+		back.setAlignment(Pos.CENTER);
+		back.setSpacing(20);
+		TextField newpass = makeText("Enter new Password ", back);
+		
+		ComboBox<String> namePLUSid = new ComboBox<String>();
+		UserFile user = new UserFile();
+		user.loadDoctors(namePLUSid);
+
+		
+		Button enter = new Button("enter");
+		back.getChildren().addAll(namePLUSid,enter);
+		enter.setOnAction(e->{
+			try {
+				String[] split = namePLUSid.getValue().split("::");
+				for (int i = 0; i < split.length; i++) {
+					System.out.println(split[i]);
+				}
+				user.changePass(split[0].trim(), Integer.parseInt(split[1].trim()), newpass.getText());
+
+			}catch (Exception e1) {
+				e1.printStackTrace();
+				// TODO: handle exception
+			}
+		});
+		//doctorid.setStyle("-fx-background-color: CHARTREUSE");
+
+		//doctorid.setStyle("-fx-background-color: PALEVIOLETRED");
+		setCenter(back);
 	}
 	private void addAccount() {
 		VBox back = new VBox();
